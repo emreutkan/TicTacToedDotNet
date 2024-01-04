@@ -1,10 +1,26 @@
+/* README
+ # Tic Tac Toe Game 
+
+  - Programming language   : `C#` 
+  - Framework              : `.NET 8` 
+  - IDE                    : `Visual Studio 2022`
+  - Developer Platform     : `Windows 11`
+  - Supported Platform(s)  : `Windows`
+
+## Functions
+  - All fields generated at runtime, allowing future upgrade to size changes
+    - This means. The size of the gui can be changed by altering  `int boxSizeWidth = 120;` for width, `int boxSizeHeight = 120;` for height. These variables are in the `initializeMultiplayer()` method of `Form1`
+  - Checks for winners only if the `placedCounter >= 5 ` which is the minimum moves it takes for a win
+  - automatically resets the fields when a player wins or all the fields are filled without a winner. (no reset button) 
+  
+ */
+
 namespace TicTacToedDotNet
 {
     public partial class Form1 : Form
     {
         private bool isPlayerOneTurn = true; // To track whose turn it is
-        int xCount = 0;
-        int oCount = 0;
+        int moveCounter = 0;
         private Button[,] buttons = new Button[3, 3];
 
 
@@ -100,10 +116,16 @@ namespace TicTacToedDotNet
                 // check right to left cross
                 buttons[0, 2].Text.Equals("X") &&
                 buttons[1, 1].Text.Equals("X") &&
-                buttons[2, 0].Text.Equals("X") 
-                ) MessageBox.Show("Player 1 (X) Wins!!.", "Winner", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                buttons[2, 0].Text.Equals("X")
+                )
+            {
+                MessageBox.Show("Player 1 (X) Wins!!.", "Winner", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // it wont continue to next line until the MessageBox is closed. so you can see the board
 
-            if (
+                ResetGame();
+            }
+
+            else if (
                // chekc first row
                buttons[0, 0].Text.Equals("O") &&
                buttons[0, 1].Text.Equals("O") &&
@@ -139,9 +161,27 @@ namespace TicTacToedDotNet
                buttons[0, 2].Text.Equals("O") &&
                buttons[1, 1].Text.Equals("O") &&
                buttons[2, 0].Text.Equals("O")
-               ) 
+               )
+            {
                 MessageBox.Show("Player 2 (O) Wins!!.", "Winner", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // it wont continue to next line until the MessageBox is closed. so you can see the board
+                ResetGame();
 
+            }
+
+        }
+
+        private void ResetGame()
+        {
+            for (int row = 0; row < 3; row++)
+            {
+                for (int col = 0; col < 3; col++)
+                {
+                    buttons[row, col].Text = "";
+                }
+            }
+            isPlayerOneTurn = true;
+            moveCounter = 0;
         }
 
         private void Button_Click(object clickedButton, EventArgs e)
@@ -159,16 +199,16 @@ namespace TicTacToedDotNet
                 if (isPlayerOneTurn)
                 {
                    button.Text = "X";
-                   xCount++;
                    isPlayerOneTurn = false;
                 }
                 else
                 {
                     button.Text = "O";
-                    oCount++;
                     isPlayerOneTurn = true;
                 }
-                if (xCount >= 3 || oCount >= 3) checkWinner();
+                moveCounter++;
+                if (moveCounter >= 5) checkWinner();
+                if (moveCounter == 9) ResetGame();
             }
 
         }
@@ -183,7 +223,7 @@ namespace TicTacToedDotNet
 
 
         // GPT MADE ALGORITHMS 
-        // ANY ALGORITHM UNDER THIS COMMENT IS MADE BY CHATGPT-4 AND COPIED DIRECTLY 
+        // ANY ALGORITHM UNDER THIS COMMENT IS MADE BY CHATGPT-4
         private Font GetAdjustedFont(Button button)
         {
             // Start with a font size that is large but likely to fit
